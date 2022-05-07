@@ -1,14 +1,10 @@
 from machine import Pin
-from time import sleep
 
-led1 = Pin(18, Pin.OUT)
-led2 = Pin(19, Pin.OUT)
-led3 = Pin(20, Pin.OUT)
-
-leds = [led1, led2, led3]
+led = Pin(25, Pin.OUT)
+key = Pin(14, Pin.IN, Pin.PULL_UP)
 
 while True:
-    for led in leds:
+    if not key.value(): # pressed, 0, LOW
         led.high()
-        sleep(0.1)
+    else: # released, 1, HIGH
         led.low()
