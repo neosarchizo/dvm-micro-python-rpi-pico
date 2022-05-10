@@ -1,13 +1,22 @@
-from machine import Pin, Timer
+from machine import Pin, PWM
+from time import sleep
 
-led = Pin(25, Pin.OUT)
+buzzer = PWM(Pin(22))
+buzzer.duty_u16(32768) # 2 ^ 16, 50%
 
-def timeout(t):
-    led.toggle()
+buzzer.freq(200)
+sleep(1)
 
-timer = Timer()
-timer.init(
-    period = 1000, # ms
-    mode = Timer.PERIODIC, # ONE_SHOT
-    callback = timeout
-)
+buzzer.freq(400)
+sleep(1)
+
+buzzer.freq(600)
+sleep(1)
+
+buzzer.freq(800)
+sleep(1)
+
+buzzer.freq(1000)
+sleep(1)
+
+buzzer.deinit()
