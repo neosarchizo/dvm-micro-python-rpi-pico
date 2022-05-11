@@ -1,22 +1,18 @@
-from machine import Pin, PWM
-from time import sleep
+from machine import SoftI2C, Pin
+from ssd1306 import SSD1306_I2C
 
-buzzer = PWM(Pin(22))
-buzzer.duty_u16(32768) # 2 ^ 16, 50%
+i2c = SoftI2C(scl=Pin(10), sda=Pin(11))
+display = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
-buzzer.freq(200)
-sleep(1)
+display.fill(0)
+display.show()
 
-buzzer.freq(400)
-sleep(1)
+display.pixel(5, 5, 1)
 
-buzzer.freq(600)
-sleep(1)
+display.hline(5, 10, 20, 1)
 
-buzzer.freq(800)
-sleep(1)
+display.rect(5, 15, 20, 10, 1)
 
-buzzer.freq(1000)
-sleep(1)
+display.text("DeviceMart", 5, 40)
 
-buzzer.deinit()
+display.show()
