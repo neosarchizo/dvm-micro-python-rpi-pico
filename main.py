@@ -1,29 +1,30 @@
-from machine import Pin, SoftI2C
+from machine import SoftI2C, Pin
 from ssd1306 import SSD1306_I2C
-from dht import DHT11
 from time import sleep
 
 i2c = SoftI2C(scl=Pin(10), sda=Pin(11))
 display = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
-sleep(1)
+pirSensor = Pin(27, Pin.IN, Pin.PULL_UP)
 
-dht = DHT11(Pin(17))
+display.fill(0)
+display.text("DeviceMart", 0, 0)
+display.text("PIR", 0, 15)
+display.show()
 
-while True:
-    dht.measure()
+def on_rising(ps):
+    for _ in range(5):
+        display.fill(0)
+        display.text("DeviceMart", 0, 0)
+        display.text("PIR", 0, 15)
+        display.text("Someone here!!!", 0, 40)
+        display.show()
+        sleep(0.5)
 
-    temperature = dht.temperature()
-    humidity = dht.humidity()
+        display.fill(0)
+        display.text("DeviceMart", 0, 0)
+        display.text("PIR", 0, 15)
+        display.show()
+        sleep(0.5)
 
-    display.fill(0)
-    display.text('DeviceMart', 0, 0)
-    display.text('DHT11', 0, 15)
-    display.text(str(temperature) + ' C', 0, 40)
-    display.text(str(humidity) + ' %', 55, 40)
-    display.show()
-
-    print(str(temperature) + ' C')
-    print(str(humidity) + ' %')
-
-    sleep(2)
+pirSensor.irq(on_rising, Pin.IRQ_RISING)
