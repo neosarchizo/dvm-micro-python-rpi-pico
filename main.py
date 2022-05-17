@@ -1,30 +1,28 @@
-from machine import SoftI2C, Pin
+from machine import Pin, SoftI2C, ADC
 from ssd1306 import SSD1306_I2C
 from time import sleep
 
 i2c = SoftI2C(scl=Pin(10), sda=Pin(11))
 display = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
-pirSensor = Pin(27, Pin.IN, Pin.PULL_UP)
+light = ADC(1)
 
-display.fill(0)
-display.text("DeviceMart", 0, 0)
-display.text("PIR", 0, 15)
-display.show()
+while True:
+    display.fill(0)
+    display.text('DeviceMart', 0, 0)
+    display.text('Light', 0, 15)
 
-def on_rising(ps):
-    for _ in range(5):
-        display.fill(0)
-        display.text("DeviceMart", 0, 0)
-        display.text("PIR", 0, 15)
-        display.text("Someone here!!!", 0, 40)
-        display.show()
-        sleep(0.5)
+    value = light.read_u16() # 2 ^ 16, 65535
 
-        display.fill(0)
-        display.text("DeviceMart", 0, 0)
-        display.text("PIR", 0, 15)
-        display.show()
-        sleep(0.5)
+    display.text(str(value) + ' / 65535', 0, 40)
+    display.text(str('%.2f' % ((value / 65535) * 3.3)) + ' V', 0, 55)
 
-pirSensor.irq(on_rising, Pin.IRQ_RISING)
+    if value <= 21840:
+        display.text('Bright', 60, 55)
+    elif value <= 43680:
+        display.text('Normal', 60, 55)
+    else:
+        display.text('Weak', 60, 55)
+    
+    display.show()
+    sleep(1)
