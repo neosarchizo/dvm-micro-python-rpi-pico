@@ -1,21 +1,26 @@
-from hcsr04 import HCSR04
-from machine import Pin, SoftI2C
-from ssd1306 import SSD1306_I2C
+from machine import Pin, PWM
 from time import sleep
 
-i2c = SoftI2C(scl=Pin(10), sda=Pin(11))
-display = SSD1306_I2C(128, 64, i2c, addr=0x3C)
+servo1 = PWM(Pin(0))
+servo1.freq(50)
 
-sonar = HCSR04(Pin(4, Pin.OUT), Pin(5, Pin.IN))
+def setAngle(angle):
+    global servo1
+    a = int(((((angle + 90) * 2) / 180) + 0.5) / 20 * 65535)
+    servo1.duty_u16(a)
 
 while True:
-    distance = sonar.getDistance()
+    setAngle(-90)
+    sleep(1)
 
-    display.fill(0)
-    display.text('DeviceMart', 0, 0)
-    display.text('Distance', 0, 15)
-    display.text(str(distance) + ' cm', 0, 35)
-    display.show()
+    setAngle(-45)
+    sleep(1)
 
-    print(str(distance) + ' cm')
-    sleep(0.5)
+    setAngle(0)
+    sleep(1)
+
+    setAngle(45)
+    sleep(1)
+
+    setAngle(90)
+    sleep(1)
