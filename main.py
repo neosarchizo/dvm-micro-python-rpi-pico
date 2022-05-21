@@ -1,26 +1,17 @@
-from machine import Pin, PWM
+from ws2812b import WS2812B
 from time import sleep
 
-servo1 = PWM(Pin(0))
-servo1.freq(50)
-
-def setAngle(angle):
-    global servo1
-    a = int(((((angle + 90) * 2) / 180) + 0.5) / 20 * 65535)
-    servo1.duty_u16(a)
+pixels = WS2812B(30, 27) # pixel count, pin number Y11
 
 while True:
-    setAngle(-90)
+    pixels.fill(255, 0, 0)
+    pixels.show()
+    sleep(1)
+    
+    pixels.fill(0, 255, 0)
+    pixels.show()
     sleep(1)
 
-    setAngle(-45)
-    sleep(1)
-
-    setAngle(0)
-    sleep(1)
-
-    setAngle(45)
-    sleep(1)
-
-    setAngle(90)
+    pixels.fill(0, 0, 255)
+    pixels.show()
     sleep(1)
